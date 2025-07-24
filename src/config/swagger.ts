@@ -1,6 +1,197 @@
-import YAML from 'yamljs';
-import path from 'path';
-
-const swaggerDocument = YAML.load(path.join(__dirname, '../docs/swagger.yaml'));
+const swaggerDocument = {
+  openapi: '3.0.0',
+  info: {
+    title: 'Customer Summary API Documentation',
+    version: '1.0.0',
+    description: 'API documentation for Customer Summary Data',
+    contact: {
+      name: 'API Support',
+    },
+  },
+  servers: [
+    {
+      url: 'https://summary-backend-production.up.railway.app',
+      description: 'Production server (Railway)',
+    },
+    {
+      url: 'http://localhost:5000',
+      description: 'Development server',
+    },
+  ],
+  tags: [
+    {
+      name: 'Customers',
+      description: 'Customer data endpoints',
+    },
+    {
+      name: 'Summary',
+      description: 'Data summary and analytics endpoints',
+    },
+  ],
+  paths: {
+    '/api/customers': {
+      get: {
+        tags: ['Customers'],
+        summary: 'Get paginated list of customers',
+        parameters: [
+          {
+            in: 'query',
+            name: 'page',
+            schema: {
+              type: 'integer',
+              default: 1,
+            },
+            description: 'Page number',
+          },
+          {
+            in: 'query',
+            name: 'limit',
+            schema: {
+              type: 'integer',
+              default: 100,
+            },
+            description: 'Number of items per page',
+          },
+        ],
+        responses: {
+          '200': {
+            description: 'Successful response',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    data: {
+                      type: 'array',
+                      items: {
+                        $ref: '#/components/schemas/Customer',
+                      },
+                    },
+                    pagination: {
+                      type: 'object',
+                      properties: {
+                        total: { type: 'integer' },
+                        page: { type: 'integer' },
+                        totalPages: { type: 'integer' },
+                        limit: { type: 'integer' },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/api/customers/summary/gender': {
+      get: {
+        tags: ['Summary'],
+        summary: 'Get gender distribution',
+        responses: {
+          '200': {
+            description: 'Gender distribution data',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      _id: {
+                        type: 'string',
+                        enum: ['Male', 'Female'],
+                      },
+                      count: { type: 'integer' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/api/customers/summary/age': {
+      get: {
+        tags: ['Summary'],
+        summary: 'Get age distribution',
+        responses: {
+          '200': {
+            description: 'Age distribution data',
+          },
+        },
+      },
+    },
+    '/api/customers/summary/device-brands': {
+      get: {
+        tags: ['Summary'],
+        summary: 'Get device brand distribution',
+        responses: {
+          '200': {
+            description: 'Device brand distribution data',
+          },
+        },
+      },
+    },
+    '/api/customers/summary/digital-interests': {
+      get: {
+        tags: ['Summary'],
+        summary: 'Get digital interests distribution',
+        responses: {
+          '200': {
+            description: 'Digital interests distribution data',
+          },
+        },
+      },
+    },
+    '/api/customers/summary/location-types': {
+      get: {
+        tags: ['Summary'],
+        summary: 'Get location types distribution',
+        responses: {
+          '200': {
+            description: 'Location types distribution data',
+          },
+        },
+      },
+    },
+    '/api/customers/summary/login-hours': {
+      get: {
+        tags: ['Summary'],
+        summary: 'Get login hours distribution',
+        responses: {
+          '200': {
+            description: 'Login hours distribution with peak hours',
+          },
+        },
+      },
+    },
+  },
+  components: {
+    schemas: {
+      Customer: {
+        type: 'object',
+        properties: {
+          _id: { type: 'string' },
+          number: { type: 'integer' },
+          nameOfLocation: { type: 'string' },
+          date: { type: 'string', format: 'date-time' },
+          loginHour: { type: 'string' },
+          name: { type: 'string' },
+          age: { type: 'integer', description: 'Birth year' },
+          gender: { type: 'string', enum: ['Male', 'Female'] },
+          email: { type: 'string' },
+          phone: { type: 'string' },
+          brandDevice: { type: 'string' },
+          digitalInterest: { type: 'string' },
+          locationType: { type: 'string' },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' },
+        },
+      },
+    },
+  },
+};
 
 export default swaggerDocument; 
