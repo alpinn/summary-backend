@@ -11,7 +11,7 @@ const swaggerDocument = {
   servers: [
     {
       url: 'https://summary-backend-production.up.railway.app',
-      description: 'Production server (Railway)',
+      description: 'Production server',
     },
     {
       url: 'http://localhost:5000',
